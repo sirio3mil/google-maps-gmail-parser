@@ -4,5 +4,5 @@
 .DS_Store
 .AppleDouble
 .LSOverride
-/bin/token.json
+/config/token.json
 /config/credentials.json
