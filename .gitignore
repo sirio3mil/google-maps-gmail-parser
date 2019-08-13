@@ -1,0 +1,8 @@
+/.env
+/vendor/
+.idea/
+.DS_Store
+.AppleDouble
+.LSOverride
+/bin/token.json
+/config/credentials.json
