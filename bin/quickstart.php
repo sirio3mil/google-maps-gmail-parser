@@ -39,15 +39,28 @@ try {
         $parser->setText(GmailMessageService::decodeBody($fullMessage->getRaw()));
 
         $subject = $parser->getHeader('Subject');
-        $dateTime = new DateTimeImmutable($parser->getHeader('Date'));
 
-        $tidy = new tidy;
-        $tidy->parseString($parser->getMessageBody('html'), $tidyConfig, 'utf8');
-        $tidy->cleanRepair();
+        if (stripos($subject, 'resumen') !== false) {
 
-        $doc = new DOMDocument();
-        $doc->loadHTML($tidy);
-        $doc->saveHTMLFile($filename);
+            $dateTime = new DateTimeImmutable($parser->getHeader('Date'));
+
+            $tidy = new tidy;
+            $tidy->parseString($parser->getMessageBody('html'), $tidyConfig, 'utf8');
+            $tidy->cleanRepair();
+
+            $doc = new DOMDocument();
+            $doc->loadHTML($tidy);
+            $doc->saveHTMLFile($filename);
+            /** @var DOMNode $node */
+            $node = $doc->getElementById('map_section');
+
+            while ($node = $node->nextSibling){
+                echo $node->getLineNo(), PHP_EOL;
+            }
+
+            die;
+
+        }
 
     }
 
