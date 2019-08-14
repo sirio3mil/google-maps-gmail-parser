@@ -2,66 +2,27 @@
 
 use App\Exception\AuthorizationNotFoundException;
 use App\Service\GmailClientService;
+use App\Service\GmailMessageService;
 
 require dirname(__DIR__, 1) . '/vendor/autoload.php';
 
-if (php_sapi_name() != 'cli') {
-    throw new Exception('This application must be run on the command line.');
-}
-
-/**
- * Get list of Messages in user's mailbox.
- *
- * @param Google_Service_Gmail $service
- * @param string $userId
- * @param $optParams
- * @return Google_Service_Gmail_Message[]
- */
-function listMessages(Google_Service_Gmail $service, string $userId, array $optParams): array
-{
-    $pageToken = NULL;
-    $messages = [];
-    do {
-        if ($pageToken) {
-            $optParams['pageToken'] = $pageToken;
-        }
-        $messagesResponse = $service->users_messages->listUsersMessages($userId, $optParams);
-        if ($messagesResponse->getMessages()) {
-            $messages = array_merge($messages, $messagesResponse->getMessages());
-            $pageToken = $messagesResponse->getNextPageToken();
-        }
-    } while ($pageToken);
-
-    return $messages;
-}
-
-/**
- * Get Message with given ID.
- *
- * @param Google_Service_Gmail $service
- * @param string $userId
- * @param string $messageId
- * @return Google_Service_Gmail_Message
- */
-function getMessage(Google_Service_Gmail $service, string $userId, string $messageId): Google_Service_Gmail_Message
-{
-    $message = $service->users_messages->get($userId, $messageId);
-    return $message;
-}
-
-$gmailClient = new GmailClientService();
-
 try {
-    $service = $gmailClient->getService();
 
-    // Print the labels in the user's account.
-    $user = 'me';
+    if (php_sapi_name() != 'cli') {
+        throw new Exception('This application must be run on the command line.');
+    }
 
-    $messages = listMessages($service, $user, [
+    $assetsFolder = dirname(__DIR__, 1) . '/temp/body/';
+
+    $gmailClient = new GmailClientService();
+
+    $service = new GmailMessageService($gmailClient);
+
+    $service->setUserId('me');
+
+    $messages = $service->listMessages([
         'q' => '{from:noreply-local-guides@google.com from:noreply-maps-timeline@google.com from:google-maps-noreply@google.com}'
     ]);
-
-    echo sizeof($messages) . PHP_EOL;
 
     /** @var Google_Service_Gmail_Message $message */
     foreach ($messages as $message) {
@@ -69,7 +30,7 @@ try {
         $subject = $dateTime = null;
         $messageId = $message->getId();
 
-        $fullMessage = getMessage($service, $user, $messageId);
+        $fullMessage = $service->getMessage($messageId);
 
         if ($payload = $fullMessage->getPayload()) {
             $headers = $payload->getHeaders();
@@ -94,7 +55,9 @@ try {
                 }
             }
 
-            echo $body->getSize() . PHP_EOL;
+            $html = GmailMessageService::decodeBody($body->getData());
+
+            file_put_contents($assetsFolder . $messageId . ".html", $html);
 
         }
     }

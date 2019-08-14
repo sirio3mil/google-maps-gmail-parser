@@ -6,3 +6,4 @@
 .LSOverride
 /config/token.json
 /config/credentials.json
+/temp/body/
