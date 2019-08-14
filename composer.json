@@ -3,6 +3,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3",
+        "ext-tidy": "*",
         "google/apiclient": "^2.0",
         "php-mime-mail-parser/php-mime-mail-parser": "^5.0",
         "sirio3mil/imdb-scraper": "^1.1"

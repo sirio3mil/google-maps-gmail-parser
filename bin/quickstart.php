@@ -26,16 +26,30 @@ try {
         'q' => '{from:noreply-local-guides@google.com from:noreply-maps-timeline@google.com from:google-maps-noreply@google.com}'
     ]);
 
+    $tidyConfig = [
+        "output-xhtml" => true,
+        "clean" => true
+    ];
+
     /** @var Google_Service_Gmail_Message $message */
     foreach ($messages as $message) {
-        $subject = $dateTime = null;
+
         $messageId = $message->getId();
         $fullMessage = $service->getRawMessage($messageId);
         $parser->setText(GmailMessageService::decodeBody($fullMessage->getRaw()));
-        $html = Cleaner::clearText($parser->getMessageBody('html'));
+
         $subject = $parser->getHeader('Subject');
         $dateTime = new DateTimeImmutable($parser->getHeader('Date'));
-        file_put_contents($assetsFolder . $messageId . ".html", $html);
+
+        $tidy = new tidy;
+        $tidy->parseString($parser->getMessageBody('html'), $tidyConfig, 'utf8');
+        $tidy->cleanRepair();
+
+        $content = Cleaner::clearText($tidy);
+        $filename = $assetsFolder . $messageId . ".html";
+
+        file_put_contents($filename, $content);
+
     }
 
 } catch (AuthorizationNotFoundException $e) {
