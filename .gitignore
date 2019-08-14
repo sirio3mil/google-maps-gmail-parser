@@ -4,6 +4,7 @@
 .DS_Store
 .AppleDouble
 .LSOverride
-/config/token.json
-/config/credentials.json
+token.json
+credentials.json
 /temp/body/
+/logs/

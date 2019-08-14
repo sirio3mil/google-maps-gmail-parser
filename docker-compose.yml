@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+    gmail:
+        image: reynier3mil/centos-php-fpm-msphpsql:graph
+        container_name: gmail
+        volumes:
+            - .:/usr/share/nginx/html/code
+            - ./logs/php-fpm:/var/log/php-fpm
+            - ./config/php-fpm/php.ini:/etc/php.ini
+            - ./config/php-fpm/php-fpm.conf:/etc/php-fpm.conf
+            - ./config/php-fpm/www.conf:/etc/php-fpm.d/www.conf
+            - ./config/php-fpm/10-opcache.ini:/etc/php.d/10-opcache.ini
+            - ./config/php-fpm/16-xdebug.ini:/etc/php.d/15-xdebug.ini
+        working_dir: /usr/share/nginx/html/code
