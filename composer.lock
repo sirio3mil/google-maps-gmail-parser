@@ -4,8 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8b7579beb8ec56cb74a9183f37ecb7db",
+    "content-hash": "3a69f93dca412509a411394c4783b9c5",
     "packages": [
+        {
+            "name": "devster/ubench",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/devster/ubench.git",
+                "reference": "255dd8d52f097918c5806f9214a8a1615ee394b5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/devster/ubench/zipball/255dd8d52f097918c5806f9214a8a1615ee394b5",
+                "reference": "255dd8d52f097918c5806f9214a8a1615ee394b5",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Ubench": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremy Perret",
+                    "email": "jeremy@devster.org"
+                }
+            ],
+            "description": "Micro PHP library for benchmarking",
+            "homepage": "https://github.com/devster/ubench",
+            "keywords": [
+                "bench",
+                "benchmark",
+                "library",
+                "micro"
+            ],
+            "time": "2017-11-02T16:41:47+00:00"
+        },
         {
             "name": "firebase/php-jwt",
             "version": "v5.0.0",
@@ -465,6 +513,73 @@
             "time": "2018-11-05T09:00:11+00:00"
         },
         {
+            "name": "php-curl-class/php-curl-class",
+            "version": "8.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-curl-class/php-curl-class.git",
+                "reference": "73bf10e2652ad2261cbab7fbf242b76f0e7ee359"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-curl-class/php-curl-class/zipball/73bf10e2652ad2261cbab7fbf242b76f0e7ee359",
+                "reference": "73bf10e2652ad2261cbab7fbf242b76f0e7ee359",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "ext-gd": "*",
+                "phpunit/phpunit": "*",
+                "squizlabs/php_codesniffer": "*"
+            },
+            "suggest": {
+                "ext-mbstring": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Curl\\": "src/Curl/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Unlicense"
+            ],
+            "authors": [
+                {
+                    "name": "Zach Borboa"
+                }
+            ],
+            "description": "PHP Curl Class makes it easy to send HTTP requests and integrate with web APIs.",
+            "homepage": "https://github.com/php-curl-class/php-curl-class",
+            "keywords": [
+                "API-Client",
+                "api",
+                "class",
+                "client",
+                "curl",
+                "framework",
+                "http",
+                "http-client",
+                "http-proxy",
+                "json",
+                "php",
+                "php-curl",
+                "php-curl-library",
+                "proxy",
+                "requests",
+                "restful",
+                "web-scraper",
+                "web-scraping ",
+                "web-service",
+                "xml"
+            ],
+            "time": "2019-05-12T08:22:01+00:00"
+        },
+        {
             "name": "php-mime-mail-parser/php-mime-mail-parser",
             "version": "5.0.3",
             "source": {
@@ -820,6 +935,56 @@
             ],
             "description": "A polyfill for getallheaders.",
             "time": "2019-03-08T08:55:37+00:00"
+        },
+        {
+            "name": "sirio3mil/imdb-scraper",
+            "version": "1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sirio3mil/imdb-scraper.git",
+                "reference": "80ccf0acc88f6789aa6003820414c3ceae34fe38"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sirio3mil/imdb-scraper/zipball/80ccf0acc88f6789aa6003820414c3ceae34fe38",
+                "reference": "80ccf0acc88f6789aa6003820414c3ceae34fe38",
+                "shasum": ""
+            },
+            "require": {
+                "devster/ubench": "2.0.0",
+                "ext-curl": "*",
+                "php": ">=7.2",
+                "php-curl-class/php-curl-class": "@dev"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "3.0.x-dev",
+                "phpmd/phpmd": "2.6.0",
+                "phpunit/phpunit": "~7.0",
+                "squizlabs/php_codesniffer": "3.4.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ImdbScraper\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "md": [
+                    "phpmd src/ text cleancode, codesize, controversial, design, naming, unusedcode"
+                ],
+                "cs": [
+                    "phpcs src/ --standard=PSR2"
+                ]
+            },
+            "description": "Internet movie database's website scraper in PHP",
+            "support": {
+                "source": "https://github.com/sirio3mil/imdb-scraper/tree/1.1",
+                "issues": "https://github.com/sirio3mil/imdb-scraper/issues"
+            },
+            "time": "2019-08-12T21:33:50+00:00"
         }
     ],
     "packages-dev": [],
