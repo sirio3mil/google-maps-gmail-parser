@@ -3,6 +3,7 @@
 use App\Exception\AuthorizationNotFoundException;
 use App\Service\GmailClientService;
 use App\Service\GmailMessageService;
+use PhpMimeMailParser\Parser;
 
 require dirname(__DIR__, 1) . '/vendor/autoload.php';
 
@@ -15,7 +16,7 @@ try {
     $assetsFolder = dirname(__DIR__, 1) . '/temp/body/';
 
     $gmailClient = new GmailClientService();
-
+    $parser = new Parser();
     $service = new GmailMessageService($gmailClient);
 
     $service->setUserId('me');
@@ -26,40 +27,14 @@ try {
 
     /** @var Google_Service_Gmail_Message $message */
     foreach ($messages as $message) {
-
         $subject = $dateTime = null;
         $messageId = $message->getId();
-
-        $fullMessage = $service->getMessage($messageId);
-
-        if ($payload = $fullMessage->getPayload()) {
-            $headers = $payload->getHeaders();
-            /** @var Google_Service_Gmail_MessagePartHeader $header */
-            foreach ($headers as $header) {
-                switch ($header->getName()) {
-                    case 'Subject':
-                        $subject = $header->getValue();
-                        break;
-                    case 'Date':
-                        $dateTime = new DateTimeImmutable($header->getValue());
-                        break;
-                }
-            }
-
-            $parts = $payload->getParts();
-            /** @var Google_Service_Gmail_MessagePart $part */
-            foreach ($parts as $part) {
-                /** @var Google_Service_Gmail_MessagePartBody $body */
-                if ($body = $part->getBody()) {
-                    break;
-                }
-            }
-
-            $html = GmailMessageService::decodeBody($body->getData());
-
-            file_put_contents($assetsFolder . $messageId . ".html", $html);
-
-        }
+        $fullMessage = $service->getRawMessage($messageId);
+        $parser->setText(GmailMessageService::decodeBody($fullMessage->getRaw()));
+        $html = $parser->getMessageBody('html');
+        $subject = $parser->getHeader('Subject');
+        $dateTime = new DateTimeImmutable($parser->getHeader('Date'));
+        file_put_contents($assetsFolder . $messageId . ".html", $html);
     }
 
 } catch (AuthorizationNotFoundException $e) {

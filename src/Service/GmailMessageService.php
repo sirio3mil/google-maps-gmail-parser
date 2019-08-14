@@ -65,6 +65,18 @@ class GmailMessageService
     }
 
     /**
+     * @param string $messageId
+     * @return Google_Service_Gmail_Message
+     */
+    public function getRawMessage(string $messageId): Google_Service_Gmail_Message
+    {
+        $message = $this->service->users_messages->get($this->userId, $messageId, [
+            'format' => 'raw'
+        ]);
+        return $message;
+    }
+
+    /**
      * @return string
      */
     public function getUserId(): string

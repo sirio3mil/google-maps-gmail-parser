@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "278034edff2120832f744d6e137506b3",
+    "content-hash": "8b7579beb8ec56cb74a9183f37ecb7db",
     "packages": [
         {
             "name": "firebase/php-jwt",
@@ -463,6 +463,88 @@
                 "psr-3"
             ],
             "time": "2018-11-05T09:00:11+00:00"
+        },
+        {
+            "name": "php-mime-mail-parser/php-mime-mail-parser",
+            "version": "5.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-mime-mail-parser/php-mime-mail-parser.git",
+                "reference": "a58f17fe63ea35a2b8a7fadb5cb8e123bd0787b4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-mime-mail-parser/php-mime-mail-parser/zipball/a58f17fe63ea35a2b8a7fadb5cb8e123bd0787b4",
+                "reference": "a58f17fe63ea35a2b8a7fadb5cb8e123bd0787b4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mailparse": "*",
+                "php": "^7.1"
+            },
+            "replace": {
+                "exorus/php-mime-mail-parser": "*",
+                "messaged/php-mime-mail-parser": "*"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpunit/php-token-stream": "^3.0",
+                "phpunit/phpunit": "^7.0",
+                "squizlabs/php_codesniffer": "^3.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PhpMimeMailParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "eXorus",
+                    "role": "Developer",
+                    "email": "exorus.spam@gmail.com",
+                    "homepage": "https://github.com/eXorus/"
+                },
+                {
+                    "name": "M.Valinskis",
+                    "role": "Developer",
+                    "email": "M.Valins@gmail.com",
+                    "homepage": "https://code.google.com/p/php-mime-mail-parser"
+                },
+                {
+                    "name": "eugene.emmett.wood",
+                    "role": "Developer",
+                    "email": "gene_w@cementhorizon.com",
+                    "homepage": "https://code.google.com/p/php-mime-mail-parser"
+                },
+                {
+                    "name": "alknetso",
+                    "role": "Developer",
+                    "email": "alkne@gmail.com",
+                    "homepage": "https://code.google.com/p/php-mime-mail-parser"
+                },
+                {
+                    "name": "bucabay",
+                    "role": "Developer",
+                    "email": "gabe@fijiwebdesign.com",
+                    "homepage": "http://www.fijiwebdesign.com"
+                }
+            ],
+            "description": "A fully tested email parser for PHP 7.1+ (mailparse extension wrapper).",
+            "homepage": "https://github.com/php-mime-mail-parser/php-mime-mail-parser",
+            "keywords": [
+                "MimeMailParser",
+                "mail",
+                "mailparse",
+                "mime",
+                "parser",
+                "php"
+            ],
+            "time": "2019-08-14T09:28:59+00:00"
         },
         {
             "name": "phpseclib/phpseclib",
