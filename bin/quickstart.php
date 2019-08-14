@@ -3,7 +3,6 @@
 use App\Exception\AuthorizationNotFoundException;
 use App\Service\GmailClientService;
 use App\Service\GmailMessageService;
-use ImdbScraper\Helper\Cleaner;
 use PhpMimeMailParser\Parser;
 
 require dirname(__DIR__, 1) . '/vendor/autoload.php';
@@ -35,6 +34,7 @@ try {
     foreach ($messages as $message) {
 
         $messageId = $message->getId();
+        $filename = $assetsFolder . $messageId . ".html";
         $fullMessage = $service->getRawMessage($messageId);
         $parser->setText(GmailMessageService::decodeBody($fullMessage->getRaw()));
 
@@ -45,10 +45,9 @@ try {
         $tidy->parseString($parser->getMessageBody('html'), $tidyConfig, 'utf8');
         $tidy->cleanRepair();
 
-        $content = Cleaner::clearText($tidy);
-        $filename = $assetsFolder . $messageId . ".html";
-
-        file_put_contents($filename, $content);
+        $doc = new DOMDocument();
+        $doc->loadHTML($tidy);
+        $doc->saveHTMLFile($filename);
 
     }
 
