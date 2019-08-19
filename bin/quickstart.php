@@ -40,27 +40,15 @@ try {
 
         $subject = $parser->getHeader('Subject');
 
-        if (stripos($subject, 'resumen') !== false) {
+        $dateTime = new DateTimeImmutable($parser->getHeader('Date'));
 
-            $dateTime = new DateTimeImmutable($parser->getHeader('Date'));
+        $tidy = new tidy;
+        $tidy->parseString($parser->getMessageBody('html'), $tidyConfig, 'utf8');
+        $tidy->cleanRepair();
 
-            $tidy = new tidy;
-            $tidy->parseString($parser->getMessageBody('html'), $tidyConfig, 'utf8');
-            $tidy->cleanRepair();
-
-            $doc = new DOMDocument();
-            $doc->loadHTML($tidy);
-            $doc->saveHTMLFile($filename);
-            /** @var DOMNode $node */
-            $node = $doc->getElementById('map_section');
-
-            while ($node = $node->nextSibling){
-                echo $node->getLineNo(), PHP_EOL;
-            }
-
-            die;
-
-        }
+        $doc = new DOMDocument();
+        @$doc->loadHTML($tidy);
+        $doc->saveHTMLFile($filename);
 
     }
 
