@@ -15,42 +15,88 @@ try {
 
     $assetsFolder = dirname(__DIR__, 1) . '/temp/body/';
 
+    if (!is_dir($assetsFolder)) {
+        if (!mkdir($assetsFolder)){
+            throw new Exception("Assets folder {$assetsFolder} can not be created");
+        }
+    }
+
+    $now = new DateTimeImmutable();
+
+    $dateFilename = $assetsFolder . "date.txt";
+    $dateTime = $now->sub(new DateInterval("P5Y"));
+
+    if (file_exists($dateFilename)) {
+        $timestamp = file_get_contents($dateFilename);
+        $dateTime = new DateTimeImmutable('@' . $timestamp);
+        if (!$dateTime) {
+            throw new Exception("Invalid date time {$timestamp}");
+        }
+    }
+
+
     $gmailClient = new GmailClientService();
     $parser = new Parser();
     $service = new GmailMessageService($gmailClient);
 
     $service->setUserId('me');
 
+    echo 'searching for messages greater than ', $dateTime->format(DATE_ISO8601), PHP_EOL;
+
     $messages = $service->listMessages([
-        'q' => '{from:noreply-local-guides@google.com from:noreply-maps-timeline@google.com from:google-maps-noreply@google.com}'
+        'q' => '{from:noreply-local-guides@google.com from:noreply-maps-timeline@google.com from:google-maps-noreply@google.com} after:' . $dateTime->getTimestamp()
     ]);
 
-    $tidyConfig = [
-        "output-xhtml" => true,
-        "clean" => true
-    ];
+    echo count($messages), ' messages found', PHP_EOL;
 
-    /** @var Google_Service_Gmail_Message $message */
-    foreach ($messages as $message) {
+    if ($messages) {
 
-        $messageId = $message->getId();
-        $filename = $assetsFolder . $messageId . ".html";
-        $fullMessage = $service->getRawMessage($messageId);
-        $parser->setText(GmailMessageService::decodeBody($fullMessage->getRaw()));
+        $tidyConfig = [
+            "output-xhtml" => true,
+            "clean" => true
+        ];
 
-        $subject = $parser->getHeader('Subject');
+        $dumpFilename = $assetsFolder . "files.csv";
+        $timeZone = new DateTimeZone('UTC');
 
-        $dateTime = new DateTimeImmutable($parser->getHeader('Date'));
+        $fp = fopen($dumpFilename, 'a');
 
-        $tidy = new tidy;
-        $tidy->parseString($parser->getMessageBody('html'), $tidyConfig, 'utf8');
-        $tidy->cleanRepair();
+        /** @var Google_Service_Gmail_Message $message */
+        foreach ($messages as $message) {
 
-        $doc = new DOMDocument();
-        @$doc->loadHTML($tidy);
-        $doc->saveHTMLFile($filename);
+            $messageId = $message->getId();
+            $filename = $assetsFolder . $messageId . ".html";
+            $fullMessage = $service->getRawMessage($messageId);
+            $parser->setText(GmailMessageService::decodeBody($fullMessage->getRaw()));
+
+            $subject = trim(str_replace('🌍', '', $parser->getHeader('Subject')));
+
+            $dateTime = new DateTimeImmutable($parser->getHeader('Date'));
+            $dateTime->setTimezone($timeZone);
+
+            $tidy = new tidy;
+            $tidy->parseString($parser->getMessageBody('html'), $tidyConfig, 'utf8');
+            $tidy->cleanRepair();
+
+            $doc = new DOMDocument();
+            @$doc->loadHTML($tidy);
+            $doc->saveHTMLFile($filename);
+
+            fputcsv($fp, [
+                $messageId,
+                $subject,
+                $dateTime->format("Y-m-d H:i:s")
+            ]);
+
+            echo 'writing message id ', $messageId, ' on ', $dateTime->format(DATE_ISO8601), PHP_EOL;
+
+        }
+
+        fclose($fp);
 
     }
+
+    file_put_contents($dateFilename, $now->getTimestamp());
 
 } catch (AuthorizationNotFoundException $e) {
     $authUrl = $e->getMessage();
